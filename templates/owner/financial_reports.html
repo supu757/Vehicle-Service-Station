@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Reports - Owner Panel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff !important; }
+            .card { box-shadow: none !important; border: 1px solid #dee2e6 !important; }
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container my-5">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+            <div>
+                <h2 class="mb-0">Detailed Financial Reports</h2>
+                <small class="text-muted">Revenue summary, invoice breakdown &amp; printable records</small>
+            </div>
+            <div class="d-flex gap-2 no-print">
+                <button type="button" onclick="window.print()" class="btn btn-success btn-sm">Print Report</button>
+                <a href="{{ url_for('owner.owner_dashboard') }}" class="btn btn-secondary btn-sm">Back to Dashboard</a>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 p-3 border-start border-4 border-success">
+                    <div class="text-muted small">Paid Revenue</div>
+                    <div class="h5 fw-bold text-success mb-0 mt-1">Rs. {{ "%.2f"|format(paid_total or 0) }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 p-3 border-start border-4 border-danger">
+                    <div class="text-muted small">Unpaid / Pending</div>
+                    <div class="h5 fw-bold text-danger mb-0 mt-1">Rs. {{ "%.2f"|format(unpaid_total or 0) }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 p-3 border-start border-4 border-primary">
+                    <div class="text-muted small">Labor Charges</div>
+                    <div class="h5 fw-bold text-primary mb-0 mt-1">Rs. {{ "%.2f"|format(labor_total or 0) }}</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card shadow-sm border-0 p-3 border-start border-4 border-warning">
+                    <div class="text-muted small">Spare Parts Total</div>
+                    <div class="h5 fw-bold text-warning-emphasis mb-0 mt-1">Rs. {{ "%.2f"|format(parts_total or 0) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Table Card -->
+        <div class="card shadow-sm border-0 p-4">
+            <form method="GET" class="row g-3 align-items-end mb-4 no-print">
+                <div class="col-sm-6 col-md-3">
+                    <label class="form-label small text-muted mb-1">From Date</label>
+                    <input type="date" name="start_date" class="form-control form-control-sm" value="{{ start_date or '' }}">
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <label class="form-label small text-muted mb-1">To Date</label>
+                    <input type="date" name="end_date" class="form-control form-control-sm" value="{{ end_date or '' }}">
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <label class="form-label small text-muted mb-1">Payment Status</label>
+                    {% set current_status = (status_filter or 'all')|lower %}
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="all" {% if current_status == 'all' %}selected{% endif %}>All</option>
+                        <option value="paid" {% if current_status == 'paid' %}selected{% endif %}>Paid</option>
+                        <option value="unpaid" {% if current_status == 'unpaid' %}selected{% endif %}>Unpaid</option>
+                    </select>
+                </div>
+                <div class="col-sm-6 col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">Filter</button>
+                    <a href="{{ url_for('owner.financial_reports') }}" class="btn btn-outline-secondary btn-sm w-100">Reset</a>
+                </div>
+            </form>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Customer</th>
+                            <th>Labor (Rs.)</th>
+                            <th>Parts (Rs.)</th>
+                            <th>Total Amount (Rs.)</th>
+                            <th>Payment Status</th>
+                            <th>Date / Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inv in invoices %}
+                        {% set inv_id = inv.invoiceID if inv.invoiceID is defined else inv.invoice_id %}
+                        {% set cust_name = inv.customer_name if inv.customer_name is defined else 'N/A' %}
+                        {% set labor_amt = inv.labor_charge if inv.labor_charge is defined else 0 %}
+                        {% set parts_amt = inv.parts_charge if inv.parts_charge is defined else 0 %}
+                        {% set tot_amt = inv.totalAmount if inv.totalAmount is defined else (inv.total_amount if inv.total_amount is defined else 0) %}
+                        {% set pay_status = inv.paymentStatus if inv.paymentStatus is defined else (inv.payment_status if inv.payment_status is defined else 'Unpaid') %}
+                        {% set inv_date = inv.created_at if inv.created_at is defined else 'Completed' %}
+                        <tr>
+                            <td>#{{ inv_id }}</td>
+                            <td>{{ cust_name or 'N/A' }}</td>
+                            <td>{{ "%.2f"|format(labor_amt or 0) }}</td>
+                            <td>{{ "%.2f"|format(parts_amt or 0) }}</td>
+                            <td><strong>Rs. {{ "%.2f"|format(tot_amt or 0) }}</strong></td>
+                            <td>
+                                {% if (pay_status or '')|lower == 'paid' %}
+                                    <span class="badge bg-success">{{ pay_status }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ pay_status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ inv_date }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">No financial records found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

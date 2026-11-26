@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Management - Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="dash-layout">
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>Prime One</h2>
+            <span>SYSTEM ADMIN</span>
+        </div>
+        <nav class="sidebar-nav">
+            <div style="border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; padding-bottom: 10px;">
+                <small style="color: #94a3b8; padding-left: 15px; font-weight: 600; font-size: 11px;">SYSTEM ADMIN</small>
+            </div>
+            <a href="{{ url_for('admin.sys_users') }}" class="nav-item active"><i class="fa-solid fa-users-gear"></i> <span>Manage Users</span></a>
+
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-item" style="margin-top: 30px;"><i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span></a>
+        </nav>
+    </aside>
+
+    <main class="main-wrapper">
+        <header class="top-header">
+            <h1>User Management (පරිශීලක කළමනාකරණය)</h1>
+        </header>
+        <section class="content-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <!-- Add User Form Card -->
+            <div class="form-card" style="margin-bottom: 24px;">
+                <h3><i class="fa-solid fa-user-plus"></i> Add New User / Staff Account</h3>
+                <form action="{{ url_for('admin.sys_add_user') }}" method="POST" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr auto; gap: 10px; margin-top: 15px; align-items: end;">
+                    <div class="form-field">
+                        <label>Full Name</label>
+                        <input type="text" name="full_name" placeholder="John Doe" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <div class="form-field">
+                        <label>Email Address</label>
+                        <input type="email" name="email" placeholder="user@gmail.com" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <div class="form-field">
+                        <label>Phone</label>
+                        <input type="text" name="phone" placeholder="0712345678" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <div class="form-field">
+                        <label>Role</label>
+                        <select name="role" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px; background:#fff;">
+                            <option value="Admin">Admin</option>
+                            <option value="Service Officer">Service Officer</option>
+                            <option value="Technician">Technician</option>
+                            <option value="Customer">Customer</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="••••••••" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <button type="submit" class="btn-register" style="background:#071d36; color:#fff; height: 41px; padding: 0 15px;">Add User</button>
+                </form>
+            </div>
+
+            <!-- Users List Table -->
+            <div class="form-card">
+                <h3><i class="fa-solid fa-users"></i> All System Users</h3>
+                <table class="dash-table" style="margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if users %}
+                            {% for u in users %}
+                            <tr>
+                                <td>#USR-{{ u.user_id }}</td>
+                                <td><strong>{{ u.full_name }}</strong></td>
+                                <td>{{ u.email }}</td>
+                                <td>{{ u.phone }}</td>
+                                <td>
+                                    <span class="badge {% if u.role == 'Admin' %}badge-completed{% elif u.role == 'Service Officer' %}badge-in-progress{% else %}badge-pending{% endif %}">
+                                        {{ u.role }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if u.user_id != session.get('user_id') %}
+                                    <form action="{{ url_for('admin.sys_delete_user', user_id=u.user_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('මෙම පරිශීලක ගිණුම ඉවත් කිරීමට අවශ්‍ය බව තහවුරුද?');">
+                                        <button type="submit" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                    {% else %}
+                                    <small style="color:#64748b;">(Current User)</small>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="6" style="text-align:center; padding:20px; color:#64748b;">කිසිදු පරිශීලකයෙකු හමු නොවීය.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

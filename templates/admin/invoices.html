@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoices & Revenue - Prime One Auto Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dash-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>Prime One</h2>
+            <span>SERVICE OFFICER</span>
+            <p><i class="fa-solid fa-location-dot"></i> Homagama</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('admin.dashboard') }}" class="nav-item">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Dashboard & Jobs</span>
+            </a>
+            <a href="{{ url_for('admin.invoices_page') }}" class="nav-item active">
+                <i class="fa-solid fa-sack-dollar"></i>
+                <span>Invoices & Revenue</span>
+            </a>
+            <a href="{{ url_for('admin.feedback_page') }}" class="nav-item">
+                <i class="fa-solid fa-star"></i>
+                <span>Customer Feedback</span>
+            </a>
+            <a href="{{ url_for('admin.vehicles_page') }}" class="nav-item">
+                <i class="fa-solid fa-car"></i>
+                <span>Registered Vehicles</span>
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-item">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-wrapper">
+        <header class="top-header">
+            <div class="header-left">
+                <h1 class="page-title">Invoices & Daily Revenue</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <span class="name"><i class="fa-solid fa-user-tie"></i> {{ session.get('full_name', 'Officer') }}</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="content-body">
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <!-- Revenue Summary Cards -->
+            <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="stat-card">
+                    <div class="stat-icon icon-green"><i class="fa-solid fa-coins"></i></div>
+                    <div class="stat-info">
+                        <h3>Rs. {{ "{:,.2f}".format(today_revenue) }}</h3>
+                        <p>Today's Revenue (දවසේ ආදායම)</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-blue"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="stat-info">
+                        <h3>Rs. {{ "{:,.2f}".format(total_revenue) }}</h3>
+                        <p>Total Collected Revenue</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-orange"><i class="fa-solid fa-clock"></i></div>
+                    <div class="stat-info">
+                        <h3>Rs. {{ "{:,.2f}".format(unpaid_total) }}</h3>
+                        <p>Unpaid / Pending Bills</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoices Table -->
+            <div class="form-card margin-top-lg">
+                <div class="card-header">
+                    <div class="header-icon" style="background:#071d36; color:#f5b014;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <div>
+                        <h2>Issued Invoices & Payments</h2>
+                        <p>Status of all issued bills and payments</p>
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="dash-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Vehicle / Customer</th>
+                                <th>Service</th>
+                                <th>Labor + Parts</th>
+                                <th>Total (LKR)</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if invoices %}
+                                {% for inv in invoices %}
+                                <tr>
+                                    <td><strong>#INV-{{ "%04d" | format(inv.invoice_id) }}</strong></td>
+                                    <td>
+                                        <strong>{{ inv.license_plate }}</strong><br>
+                                        <small style="color:#64748b;">{{ inv.customer_name }}</small>
+                                    </td>
+                                    <td>{{ inv.service_type }}</td>
+                                    <td>Rs. {{ "{:,.0f}".format(inv.labor_charge) }} + {{ "{:,.0f}".format(inv.parts_charge) }}</td>
+                                    <td><strong>Rs. {{ "{:,.2f}".format(inv.total_amount) }}</strong></td>
+                                    <td>
+                                        <span class="badge badge-{{ inv.payment_status | lower }}">{{ inv.payment_status }}</span>
+                                    </td>
+                                    <td>
+                                        {% if inv.payment_status == 'Unpaid' %}
+                                            <form action="{{ url_for('admin.mark_paid', invoice_id=inv.invoice_id) }}" method="POST" style="display:inline;">
+                                                <button type="submit" style="background:#16a34a; color:#fff; border:none; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:12px;">
+                                                    <i class="fa-solid fa-check"></i> Mark Paid
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <span style="color:#16a34a; font-size:12px; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Settled</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" style="text-align:center; padding:24px; color:#94a3b8;">තවම කිසිදු බිල්පතක් නිකුත් කර නොමැත.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </main>
+</div>
+
+</body>
+</html>

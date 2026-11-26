@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Prime One Auto Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dash-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-svg">
+                <svg viewBox="0 0 160 85" width="110" height="60">
+                    <path d="M 80,10 C 83.5,10 84.5,13 87,14 C 88.5,13 91.5,11 94.5,13 C 97.5,15 96.5,18 97.5,20 C 100,21 103,19.5 105.5,22 C 108,24.5 106.5,27.5 107.5,30 C 110,31 112,34 112,37.5 C 112,41 110,44 107.5,45 C 106.5,47.5 108,50.5 105.5,53 C 103,55.5 100,54 97.5,55 C 96.5,57 97.5,60 94.5,62 C 91.5,64 88.5,62 87,61 C 84.5,62 83.5,65 80,65 C 76.5,65 75.5,62 73,61 C 62.5,60 63.5,57 62.5,55 C 60,54 57,55.5 54.5,53 C 52,50.5 53.5,47.5 52.5,45 Z" fill="#F5B014"/>
+                    <circle cx="80" cy="37.5" r="22" fill="#FFFFFF"/>
+                    <path d="M 45,52 C 45,52 48,42 55,39 C 62,36 78,24 95,28 C 108,31 123,38 126,48 C 112,54 110,54 103,54 C 98,42 85,42 80,54 Z" fill="#0B3C7C"/>
+                </svg>
+            </div>
+            <h2>Prime One</h2>
+            <span>AUTO SERVICE</span>
+            <p><i class="fa-solid fa-location-dot"></i> Homagama</p>
+        </div>
+
+        <!-- Language Switcher -->
+        <div class="language-switcher" style="padding: 10px 16px; display: flex; gap: 8px; align-items: center; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px;">
+            <span style="color: #94a3b8;"><i class="fa-solid fa-globe"></i> Lang:</span>
+            <a href="{{ url_for('set_language', lang='en') }}" style="color: {% if current_lang == 'en' %}#f5b014{% else %}#cbd5e1{% endif %}; text-decoration: none; font-weight: {% if current_lang == 'en' %}700{% else %}400{% endif %};">EN</a> |
+            <a href="{{ url_for('set_language', lang='si') }}" style="color: {% if current_lang == 'si' %}#f5b014{% else %}#cbd5e1{% endif %}; text-decoration: none; font-weight: {% if current_lang == 'si' %}700{% else %}400{% endif %};">සිං</a> |
+            <a href="{{ url_for('set_language', lang='ta') }}" style="color: {% if current_lang == 'ta' %}#f5b014{% else %}#cbd5e1{% endif %}; text-decoration: none; font-weight: {% if current_lang == 'ta' %}700{% else %}400{% endif %};">தமிழ்</a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('customer.dashboard') }}" class="nav-item active">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('customer.vehicle_registration_page') }}" class="nav-item">
+                <i class="fa-solid fa-car"></i>
+                <span>Vehicle Registration</span>
+            </a>
+            <a href="{{ url_for('customer.service_history_page') }}" class="nav-item">
+    <i class="fa-solid fa-clock-rotate-left"></i>
+    <span>Service History</span>
+</a>
+            <a href="{{ url_for('customer.bookings_page') }}" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Bookings</span>
+            </a>
+            <a href="{{ url_for('customer.bills_page') }}" class="nav-item">
+    <i class="fa-solid fa-file-invoice"></i>
+    <span>Bills</span>
+</a>
+            <a href="{{ url_for('customer.feedback_page') }}" class="nav-item">
+    <i class="fa-solid fa-comment-dots"></i>
+    <span>Feedback</span>
+</a>
+<a href="{{ url_for('customer.settings_page') }}" class="nav-item">
+    <i class="fa-solid fa-gear"></i>
+    <span>Settings</span>
+</a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-item">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-wrapper">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+                <h1 class="page-title">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Avatar" class="avatar">
+                    <span class="name">{{ session.get('full_name', 'User') }}</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="content-body">
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <!-- Stats Summary Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon icon-blue"><i class="fa-solid fa-car-side"></i></div>
+                    <div class="stat-info"><h3>{{ total_vehicles }}</h3><p>Registered Vehicles</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-gold"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div class="stat-info"><h3>{{ total_bookings }}</h3><p>Total Bookings</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-orange"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <div class="stat-info"><h3>{{ pending_services }}</h3><p>Pending Services</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-green"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="stat-info"><h3>{{ completed_services }}</h3><p>Completed Services</p></div>
+                </div>
+            </div>
+
+            <!-- My Vehicles Section -->
+            <div class="section-container margin-top-lg">
+                <div class="section-header">
+                    <h2><i class="fa-solid fa-car highlight-icon"></i> My Vehicles </h2>
+                    <a href="{{ url_for('customer.vehicle_registration_page') }}" class="btn-add-new">
+                        <i class="fa-solid fa-plus"></i> Add New Vehicle
+                    </a>
+                </div>
+
+                <div class="vehicles-grid">
+                    {% if vehicles %}
+                        {% for vehicle in vehicles %}
+                        <div class="vehicle-card">
+                            <div class="v-card-top">
+                                <div class="v-badge">{{ vehicle.license_plate }}</div>
+                                <span class="v-year">{{ vehicle.year if vehicle.year else 'N/A' }}</span>
+                            </div>
+                            <div class="v-card-body">
+                                <h3>{{ vehicle.make_model }}</h3>
+                                <div class="v-details">
+                                    <p><i class="fa-solid fa-barcode"></i> Chassis: <span>{{ vehicle.chassis_number if vehicle.chassis_number else 'N/A' }}</span></p>
+                                    <p><i class="fa-solid fa-palette"></i> Colour: <span>{{ vehicle.colour if vehicle.colour else 'N/A' }}</span></p>
+                                    <p><i class="fa-solid fa-gauge-high"></i> Mileage: <span>{{ vehicle.mileage if vehicle.mileage else '0' }} km</span></p>
+                                </div>
+                            </div>
+                            <div class="v-card-footer">
+                                <a href="{{ url_for('customer.book_service_page', vehicle_id=vehicle.vehicle_id) }}" class="btn-v-action"><i class="fa-solid fa-wrench"></i> Book Service</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fa-solid fa-car-burst"></i>
+                            <p>No vehicles have been registered yet.</p>
+                            <a href="{{ url_for('customer.vehicle_registration_page') }}" class="btn-link">Register New Vehicle</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- LIVE SERVICE STATUS TRACKER (නලුත්ම සජීවී සේවා තත්ත්වය) -->
+            <div class="form-card margin-top-lg">
+                <div class="card-header">
+                    <div class="header-icon" style="background:#0b3c7c; color:#f5b014;">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                    </div>
+                    <div>
+                        <h2>Live Service Status Tracker</h2>
+                        <p>Real-Time Vehicle Service Status Monitor</p>
+                    </div>
+                </div>
+
+                {% if active_service %}
+                <div class="live-tracker-box">
+                    <div class="tracker-header">
+                        <div class="vehicle-info-tag">
+                            <i class="fa-solid fa-car"></i>
+                            <strong>{{ active_service.license_plate }}</strong> ({{ active_service.make_model }})
+                        </div>
+                        <div class="service-type-tag">
+                            <i class="fa-solid fa-gears"></i> {{ active_service.service_type }}
+                        </div>
+                        <div class="date-tag">
+                            <i class="fa-regular fa-calendar"></i> {{ active_service.booking_date }} | {{ active_service.time_slot }}
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar & Status Steps -->
+                    <div class="status-steps">
+                        <!-- Step 1: Appointment Booked -->
+                        <div class="step-item completed">
+                            <div class="step-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                            <span class="step-label">Booked</span>
+                            
+                        </div>
+                        
+                        <div class="step-line {% if active_service.status in ['In Progress', 'Completed'] %}active{% endif %}"></div>
+
+                        <!-- Step 2: In Service Station / Under Repair -->
+                        <div class="step-item {% if active_service.status in ['In Progress', 'Completed'] %}active{% endif %}">
+                            <div class="step-icon"><i class="fa-solid fa-wrench"></i></div>
+                            <span class="step-label">In Service</span>
+                        
+                        </div>
+
+                        <div class="step-line {% if active_service.status == 'Completed' %}active{% endif %}"></div>
+
+                        <!-- Step 3: Service Completed & Ready -->
+                        <div class="step-item {% if active_service.status == 'Completed' %}completed{% endif %}">
+                            <div class="step-icon"><i class="fa-solid fa-circle-check"></i></div>
+                            <span class="step-label">Completed</span>
+                            
+                        </div>
+                    </div>
+
+                    <div class="current-status-footer">
+                        <span>Current Status: </span>
+                        <span class="badge badge-{{ active_service.status | lower }}" style="font-size:13px; padding:6px 14px;">
+                            {{ active_service.status }}
+                        </span>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state" style="padding: 20px;">
+                    <p style="color:#94a3b8;"><i class="fa-solid fa-circle-info"></i> No active bookings available for review.</p>
+                </div>
+                {% endif %}
+            </div>
+
+        </section>
+
+        <div class="page-corner-accent"></div>
+    </main>
+</div>
+
+</body>
+</html>

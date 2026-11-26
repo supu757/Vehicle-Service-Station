@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #INV-{{ "%04d" | format(bill.invoice_id) }} - Prime One Auto Service</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
+        .invoice-box { max-width: 800px; margin: auto; padding: 30px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .invoice-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; }
+        .logo-title h1 { margin: 0; font-size: 24px; color: #0b3c7c; }
+        .logo-title span { color: #f5b014; font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+        .inv-details { text-align: right; }
+        .inv-details h2 { margin: 0; color: #071d36; font-size: 20px; }
+        .inv-grid { display: flex; justify-content: space-between; margin: 25px 0; font-size: 14px; }
+        .inv-grid div p { margin: 4px 0; color: #475569; }
+        .inv-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .inv-table th, .inv-table td { padding: 12px; text-align: left; border-bottom: 1px solid #cbd5e1; }
+        .inv-table th { background: #071d36; color: #ffffff; font-size: 13px; }
+        .total-section { margin-top: 20px; text-align: right; font-size: 15px; }
+        .total-section table { margin-left: auto; width: 300px; border-collapse: collapse; }
+        .total-section td { padding: 8px; border-bottom: 1px solid #e2e8f0; }
+        .total-row { font-size: 18px; font-weight: 700; color: #0b3c7c; }
+        .badge-paid { background: #dcfce7; color: #15803d; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+        .badge-unpaid { background: #fee2e2; color: #b91c1c; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+        .btn-print { background: #f5b014; color: #071d36; border: none; padding: 10px 20px; font-size: 14px; font-weight: 600; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-print:hover { background: #e09f0f; }
+        @media print {
+            body { background: #ffffff; padding: 0; }
+            .invoice-box { box-shadow: none; border-radius: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print" style="max-width: 800px; margin: 0 auto 15px auto; display: flex; justify-content: space-between;">
+    <a href="{{ url_for('customer.bills_page') }}" style="color:#0b3c7c; text-decoration:none; font-weight:600;"><i class="fa-solid fa-arrow-left"></i> Back to Bills</a>
+    <button onclick="window.print()" class="btn-print"><i class="fa-solid fa-print"></i> Print Invoice</button>
+</div>
+
+<div class="invoice-box">
+    
+    <div class="invoice-header">
+        <div class="logo-title">
+            <h1>PRIME ONE AUTO SERVICE</h1>
+            <span>HOMAGAMA • SRI LANKA</span>
+            <p style="margin: 5px 0 0 0; font-size: 12px; color: #64748b;">High Quality Vehicle Maintenance & Repairs</p>
+        </div>
+        <div class="inv-details">
+            <h2>INVOICE</h2>
+            <p style="margin: 4px 0;"><strong>Invoice #:</strong> #INV-{{ "%04d" | format(bill.invoice_id) }}</p>
+            <p style="margin: 4px 0;"><strong>Date:</strong> {{ bill.created_at.strftime('%Y-%m-%d') if bill.created_at else bill.booking_date }}</p>
+            <p style="margin: 4px 0;"><strong>Status:</strong> 
+                <span class="badge-{{ bill.payment_status | lower }}">{{ bill.payment_status }}</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="inv-grid">
+        <div>
+            <strong style="color:#071d36;">CUSTOMER DETAILS:</strong>
+            <p><strong>Name:</strong> {{ bill.full_name }}</p>
+            <p><strong>Email:</strong> {{ bill.email }}</p>
+            <p><strong>Phone:</strong> {{ bill.phone if bill.phone else 'N/A' }}</p>
+        </div>
+        <div>
+            <strong style="color:#071d36;">VEHICLE DETAILS:</strong>
+            <p><strong>Plate No:</strong> {{ bill.license_plate }}</p>
+            <p><strong>Model:</strong> {{ bill.make_model }}</p>
+            <p><strong>Chassis No:</strong> {{ bill.chassis_number if bill.chassis_number else 'N/A' }}</p>
+        </div>
+    </div>
+
+    <table class="inv-table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Service Type</th>
+                <th style="text-align: right;">Amount (LKR)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Labor / Service Charges</td>
+                <td>{{ bill.service_type }}</td>
+                <td style="text-align: right;">Rs. {{ "{:,.2f}".format(bill.labor_charge) }}</td>
+            </tr>
+            <tr>
+                <td>Spare Parts & Materials</td>
+                <td>-</td>
+                <td style="text-align: right;">Rs. {{ "{:,.2f}".format(bill.parts_charge) }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="total-section">
+        <table>
+            <tr>
+                <td>Labor Total:</td>
+                <td style="text-align: right;">Rs. {{ "{:,.2f}".format(bill.labor_charge) }}</td>
+            </tr>
+            <tr>
+                <td>Parts Total:</td>
+                <td style="text-align: right;">Rs. {{ "{:,.2f}".format(bill.parts_charge) }}</td>
+            </tr>
+            <tr class="total-row">
+                <td>Grand Total:</td>
+                <td style="text-align: right;">Rs. {{ "{:,.2f}".format(bill.total_amount) }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin-top: 40px; border-top: 1px dashed #cbd5e1; padding-top: 15px; text-align: center; font-size: 12px; color: #64748b;">
+        <p>Thank you for choosing Prime One Auto Service!</p>
+    </div>
+
+</div>
+
+</body>
+</html>

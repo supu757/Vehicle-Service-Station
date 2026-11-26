@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Registration - Prime One Auto Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dash-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-svg">
+                <svg viewBox="0 0 160 85" width="110" height="60">
+                    <path d="M 80,10 C 83.5,10 84.5,13 87,14 C 88.5,13 91.5,11 94.5,13 C 97.5,15 96.5,18 97.5,20 C 100,21 103,19.5 105.5,22 C 108,24.5 106.5,27.5 107.5,30 C 110,31 112,34 112,37.5 C 112,41 110,44 107.5,45 C 106.5,47.5 108,50.5 105.5,53 C 103,55.5 100,54 97.5,55 C 96.5,57 97.5,60 94.5,62 C 91.5,64 88.5,62 87,61 C 84.5,62 83.5,65 80,65 C 76.5,65 75.5,62 73,61 C 62.5,60 63.5,57 62.5,55 C 60,54 57,55.5 54.5,53 C 52,50.5 53.5,47.5 52.5,45 C 48,44 48,41 48,37.5 C 48,34 50,31 52.5,30 C 53.5,27.5 52,24.5 54.5,22 C 57,19.5 60,21 62.5,20 C 63.5,18 62.5,15 65.5,13 C 68.5,11 71.5,13 73,14 C 75.5,13 76.5,10 80,10 Z" fill="#F5B014"/>
+                    <circle cx="80" cy="37.5" r="22" fill="#FFFFFF"/>
+                    <path d="M 45,52 C 45,52 48,42 55,39 C 62,36 78,24 95,28 C 108,31 123,38 126,48 C 112,54 110,54 103,54 C 98,42 85,42 80,54 Z" fill="#0B3C7C"/>
+                </svg>
+            </div>
+            <h2>Prime One</h2>
+            <span>AUTO SERVICE</span>
+            <p><i class="fa-solid fa-location-dot"></i> Homagama</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('customer.dashboard') }}" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('customer.vehicle_registration_page') }}" class="nav-item active">
+                <i class="fa-solid fa-car"></i>
+                <span>Vehicle Registration</span>
+            </a>
+            <a href="{{ url_for('customer.service_history_page') }}" class="nav-item">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>Service History</span>
+            </a>
+            <a href="{{ url_for('customer.bookings_page') }}" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Bookings</span>
+            </a>
+            <a href="{{ url_for('customer.bills_page') }}" class="nav-item">
+    <i class="fa-solid fa-file-invoice"></i>
+    <span>Bills</span>
+</a>
+            </a>
+            <a href="{{ url_for('customer.feedback_page') }}" class="nav-item">
+                <i class="fa-solid fa-comment-dots"></i>
+                <span>Feedback</span>
+            </a>
+            <a href="{{ url_for('customer.settings_page') }}" class="nav-item">
+                <i class="fa-solid fa-gear"></i>
+                <span>Settings</span>
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-item">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-wrapper">
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+                <h1 class="page-title">Vehicle Registration</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Avatar" class="avatar">
+                    <span class="name">{{ session.get('full_name', 'User') }}</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="content-body">
+            
+            <div class="form-card">
+                
+                <div class="card-header">
+                    <div class="header-icon">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+                    <div>
+                        <h2>Vehicle Registration Form</h2>
+                        <p>Please fill in the details below to register your vehicle in our system.</p>
+                    </div>
+                </div>
+
+                <!-- Flash Message Display -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert alert-{{ category }}">
+                        <i class="fa-solid {% if category=='danger' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+                        {{ message }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <form action="{{ url_for('customer.add_vehicle') }}" method="POST" class="reg-form">
+                    
+                    <div class="form-grid">
+                        
+                        <div class="form-field">
+                            <label>Number Plate </label>
+                            <div class="input-box">
+                                <i class="fa-solid fa-id-card input-icon"></i>
+                                <input type="text" name="license_plate" placeholder="eg: WP CAB-1234" required>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label>Vehicle Model </label>
+                            <div class="input-box">
+                                <i class="fa-solid fa-car-side input-icon"></i>
+                                <input type="text" name="make_model" placeholder="eg: Toyota Grace / Honda Vezel" required>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label>Chassis Number</label>
+                            <div class="input-box">
+                                <i class="fa-solid fa-barcode input-icon"></i>
+                                <input type="text" name="chassis_number" placeholder="Enter chassis number">
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label>Colour</label>
+                            <div class="input-box select-box">
+                                <i class="fa-solid fa-palette input-icon"></i>
+                                <select name="colour" required>
+                                    <option value="" disabled selected>Select vehicle colour</option>
+                                    <option value="Black">Black</option>
+                                    <option value="White">White</option>
+                                    <option value="Silver">Silver</option>
+                                    <option value="Red">Red</option>
+                                    <option value="Blue">Blue</option>
+                                    <option value="Grey">Grey</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label>Year</label>
+                            <div class="input-box select-box">
+                                <i class="fa-regular fa-calendar input-icon"></i>
+                                <select name="year" required>
+                                    <option value="" disabled selected>Select year</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2015">2015</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label>Current Mileage (km)</label>
+                            <div class="input-box">
+                                <i class="fa-solid fa-gauge-high input-icon"></i>
+                                <input type="number" name="mileage" placeholder="Enter current mileage">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="reset" class="btn-cancel">Cancel</button>
+                        <button type="submit" class="btn-register">
+                            <i class="fa-solid fa-car"></i> Register Vehicle
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+        <div class="page-corner-accent"></div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

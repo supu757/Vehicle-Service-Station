@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Feedback - Prime One Auto Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dash-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>Prime One</h2>
+            <span>SERVICE OFFICER</span>
+            <p><i class="fa-solid fa-location-dot"></i> Homagama</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('admin.dashboard') }}" class="nav-item">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Dashboard & Jobs</span>
+            </a>
+            <a href="{{ url_for('admin.invoices_page') }}" class="nav-item">
+                <i class="fa-solid fa-sack-dollar"></i>
+                <span>Invoices & Revenue</span>
+            </a>
+            <a href="{{ url_for('admin.feedback_page') }}" class="nav-item active">
+                <i class="fa-solid fa-star"></i>
+                <span>Customer Feedback</span>
+            </a>
+            <a href="{{ url_for('admin.vehicles_page') }}" class="nav-item">
+                <i class="fa-solid fa-car"></i>
+                <span>Registered Vehicles</span>
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-item">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-wrapper">
+        <header class="top-header">
+            <div class="header-left">
+                <h1 class="page-title">Customer Feedback & Ratings</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <span class="name"><i class="fa-solid fa-user-tie"></i> {{ session.get('full_name', 'Officer') }}</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="content-body">
+            
+            <!-- Rating Summary -->
+            <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="stat-card">
+                    <div class="stat-icon icon-gold"><i class="fa-solid fa-star"></i></div>
+                    <div class="stat-info">
+                        <h3>{{ avg_rating }} / 5.0</h3>
+                        <p>Average Service Rating</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-blue"><i class="fa-solid fa-comments"></i></div>
+                    <div class="stat-info">
+                        <h3>{{ feedbacks | length }}</h3>
+                        <p>Total Customer Reviews</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Table -->
+            <div class="form-card margin-top-lg">
+                <div class="card-header">
+                    <div class="header-icon" style="background:#f5b014; color:#071d36;"><i class="fa-solid fa-comment-dots"></i></div>
+                    <div>
+                        <h2>All Customer Feedback</h2>
+                        <p>Opinions and assessments submitted by consumers</p>
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="dash-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Rating</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if feedbacks %}
+                                {% for fb in feedbacks %}
+                                <tr>
+                                    <td>{{ fb.created_at.strftime('%Y-%m-%d %H:%M') if fb.created_at else '' }}</td>
+                                    <td>
+                                        <strong>{{ fb.full_name }}</strong><br>
+                                        <small style="color:#64748b;">{{ fb.phone if fb.phone else fb.email }}</small>
+                                    </td>
+                                    <td>
+                                        <span style="color:#f5b014; font-size:16px;">
+                                            {% for i in range(fb.rating) %}★{% endfor %}
+                                        </span>
+                                        <strong>({{ fb.rating }}/5)</strong>
+                                    </td>
+                                    <td>{{ fb.comments }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" style="text-align:center; padding:24px; color:#94a3b8;">තවම කිසිදු පාරිභෝගික අදහසක් ලැබී නොමැත.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </main>
+</div>
+
+</body>
+</html>

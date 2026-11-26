@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Vehicles - Prime One Auto Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="dash-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>Prime One</h2>
+            <span>SERVICE OFFICER</span>
+            <p><i class="fa-solid fa-location-dot"></i> Homagama</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('admin.dashboard') }}" class="nav-item">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Dashboard & Jobs</span>
+            </a>
+            <a href="{{ url_for('admin.invoices_page') }}" class="nav-item">
+                <i class="fa-solid fa-sack-dollar"></i>
+                <span>Invoices & Revenue</span>
+            </a>
+            <a href="{{ url_for('admin.feedback_page') }}" class="nav-item">
+                <i class="fa-solid fa-star"></i>
+                <span>Customer Feedback</span>
+            </a>
+            <a href="{{ url_for('admin.vehicles_page') }}" class="nav-item active">
+                <i class="fa-solid fa-car"></i>
+                <span>Registered Vehicles</span>
+            </a>
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-item">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-wrapper">
+        <header class="top-header">
+            <div class="header-left">
+                <h1 class="page-title">Registered Vehicles</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-profile">
+                    <span class="name"><i class="fa-solid fa-user-tie"></i> {{ session.get('full_name', 'Officer') }}</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="content-body">
+            
+            <div class="form-card">
+                <div class="card-header">
+                    <div class="header-icon"><i class="fa-solid fa-car"></i></div>
+                    <div>
+                        <h2>All Registered Vehicles ({{ vehicles | length }})</h2>
+                        <p>Details of all vehicles and owners registered in the system</p>
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="dash-table">
+                        <thead>
+                            <tr>
+                                <th>Number Plate</th>
+                                <th>Model & Year</th>
+                                <th>Colour / Chassis</th>
+                                <th>Mileage</th>
+                                <th>Owner Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if vehicles %}
+                                {% for v in vehicles %}
+                                <tr>
+                                    <td><strong>{{ v.license_plate }}</strong></td>
+                                    <td>{{ v.make_model }} ({{ v.year }})</td>
+                                    <td>{{ v.colour }} <br><small style="color:#64748b;">{{ v.chassis_number or 'N/A' }}</small></td>
+                                    <td>{{ v.mileage }} km</td>
+                                    <td>
+                                        <strong>{{ v.owner_name }}</strong><br>
+                                        <small style="color:#64748b;">{{ v.owner_phone or v.owner_email }}</small>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" style="text-align:center; padding:24px; color:#94a3b8;">තවම කිසිදු වාහනයක් ලියාපදිංචි වී නොමැත.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </main>
+</div>
+
+</body>
+</html>

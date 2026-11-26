@@ -1,0 +1,491 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background-color: #eef2f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Card Container */
+.login-wrapper {
+    width: 100%;
+    max-width: 1050px;
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(10, 37, 69, 0.12);
+    display: flex;
+    overflow: hidden;
+    min-height: 600px;
+}
+
+/* ---------------- වම් පස කොටස (Dark Navy) ---------------- */
+.login-left {
+    background-color: #0b2545;
+    color: #ffffff;
+    width: 48%;
+    padding: 35px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* Image Grid */
+.image-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.img-box {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.main-img {
+    grid-column: span 2;
+    height: 160px;
+}
+
+.sub-img {
+    height: 110px;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Banner Text */
+.left-content h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.left-content .highlight {
+    color: #f5b014;
+}
+
+.left-content p {
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+/* Features List (Icons 4) */
+.features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 20px;
+}
+
+.feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.feature-item i {
+    font-size: 18px;
+    color: #f5b014;
+    margin-bottom: 8px;
+}
+
+.feature-item span {
+    font-size: 10.5px;
+    color: #e2e8f0;
+    line-height: 1.2;
+}
+
+/* Decorative Yellow Corner */
+.yellow-corner {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-bottom: 45px solid #f5b014;
+    border-right: 45px solid transparent;
+}
+
+/* ---------------- දකුණු පස කොටස (Form) ---------------- */
+.login-right {
+    width: 52%;
+    padding: 40px 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Logo Section */
+.logo-container {
+    text-align: center;
+}
+
+.logo-icon {
+    font-size: 32px;
+    color: #0b3c7c;
+    margin-bottom: 4px;
+    position: relative;
+    display: inline-block;
+}
+
+.logo-icon .gear-ic {
+    color: #f5b014;
+    font-size: 20px;
+    position: absolute;
+    top: -5px;
+    right: -10px;
+}
+
+.brand-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0b2545;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+.brand-subtitle {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0b3c7c;
+    letter-spacing: 3px;
+    display: block;
+    margin-top: 2px;
+}
+
+.location-tag {
+    font-size: 12px;
+    color: #0b3c7c;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.location-tag i {
+    color: #f5b014;
+}
+
+/* Welcome Text */
+.welcome-text {
+    text-align: center;
+    margin: 15px 0 20px;
+}
+
+.welcome-text h3 {
+    font-size: 16px;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.welcome-text p {
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* Inputs */
+.input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 40px 12px 42px;
+    background-color: #f0f5ff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: #334155;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.input-group input:focus {
+    border-color: #0b3c7c;
+    background-color: #ffffff;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 14px;
+}
+
+.eye-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.remember-me {
+    color: #475569;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.forgot-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Button */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #0b3c7c;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #072753;
+}
+
+/* Signup Link */
+.signup-text {
+    text-align: center;
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 15px;
+}
+
+.signup-text a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Footer */
+.login-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #94a3b8;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 15px;
+    margin-top: 15px;
+}
+
+.login-footer a {
+    color: #94a3b8;
+    text-decoration: none;
+}
+
+/* Responsive for Mobile */
+@media (max-width: 850px) {
+    .login-card {
+        flex-direction: column;
+    }
+    .login-left {
+        width: 100%;
+    }
+    .login-right {
+        width: 100%;
+        padding: 30px 20px;
+    }
+}
+
+/* ------------ Dashboard Styles ------------ */
+.dashboard-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dash-header {
+    background: #0b2545;
+    color: #fff;
+    padding: 20px 30px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.dash-brand h2 {
+    font-size: 22px;
+    font-weight: 800;
+}
+.dash-brand h2 span { color: #f5b014; font-size: 14px; }
+.dash-brand p { font-size: 12px; color: #cbd5e1; }
+
+.btn-logout {
+    background-color: #dc2626;
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 15px;
+}
+
+.grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.dash-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.dash-card h3 {
+    font-size: 16px;
+    color: #0b2545;
+    margin-bottom: 18px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 10px;
+}
+
+.dash-form select, .dash-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.btn-action {
+    width: 100%;
+    padding: 11px;
+    background-color: #0b3c7c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.btn-gold {
+    background-color: #f5b014;
+    color: #0b2545;
+}
+
+.margin-top { margin-top: 25px; }
+
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.dash-table th, .dash-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dash-table th {
+    background-color: #f8fafc;
+    color: #475569;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.badge-pending { background-color: #fef3c7; color: #d97706; }
+.badge-confirmed { background-color: #dbeafe; color: #2563eb; }
+.badge-completed { background-color: #dcfce7; color: #16a34a; }
+.badge-cancelled { background-color: #fee2e2; color: #dc2626; }
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.input-icon-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8fafc;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 11px 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.input-icon-box i {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.input-icon-box input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 0.95rem;
+    color: #1e293b;
+}
+
+.input-icon-box:focus-within {
+    background: #ffffff;
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}

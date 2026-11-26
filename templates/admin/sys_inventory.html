@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spare Parts Inventory - Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="dash-layout">
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h2>Prime One</h2>
+            <span>MANAGEMENT</span>
+        </div>
+        <nav class="sidebar-nav">
+    <a href="{{ url_for('admin.dashboard') }}" class="nav-item">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>Dashboard</span>
+    </a>
+    
+    <!-- MANAGEMENT (Inventory & Services) -->
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0; padding-top: 10px;">
+        <small style="color: #94a3b8; padding-left: 15px; font-weight: 600; font-size: 11px;">MANAGEMENT</small>
+    </div>
+    <a href="{{ url_for('admin.sys_inventory') }}" class="nav-item">
+        <i class="fa-solid fa-boxes-stacked"></i>
+        <span>Inventory</span>
+    </a>
+    <a href="{{ url_for('admin.sys_services') }}" class="nav-item">
+        <i class="fa-solid fa-screwdriver-wrench"></i>
+        <span>Services</span>
+    </a>
+
+    <!-- SYSTEM ADMIN (User Management) -->
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0; padding-top: 10px;">
+        <small style="color: #94a3b8; padding-left: 15px; font-weight: 600; font-size: 11px;">SYSTEM ADMIN</small>
+    </div>
+    <a href="{{ url_for('admin.sys_users') }}" class="nav-item active">
+        <i class="fa-solid fa-users-gear"></i>
+        <span>Manage Users</span>
+    </a>
+
+    <a href="{{ url_for('auth.logout') }}" class="nav-item logout-item" style="margin-top: 20px;">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sign Out</span>
+    </a>
+</nav>
+    </aside>
+
+    <main class="main-wrapper">
+        <header class="top-header">
+            <h1>Spare Parts Inventory Management</h1>
+        </header>
+        <section class="content-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <!-- Add Part Form Card -->
+            <div class="form-card" style="margin-bottom: 24px;">
+                <h3><i class="fa-solid fa-plus-circle"></i> Add New Spare Part</h3>
+                <form action="{{ url_for('admin.sys_save_part') }}" method="POST" style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 12px; margin-top: 15px; align-items: end;">
+                    <div class="form-field">
+                        <label>Part Name </label>
+                        <input type="text" name="part_name" placeholder="eg: Oil Filter" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <div class="form-field">
+                        <label>Stock Qty</label>
+                        <input type="number" name="stock_qty" placeholder="10" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <div class="form-field">
+                        <label>Unit Price (LKR)</label>
+                        <input type="number" step="0.01" name="unit_price" placeholder="2200.00" required style="width:100%; padding:9px; border:1px solid #cbd5e1; border-radius:6px;">
+                    </div>
+                    <button type="submit" class="btn-register" style="background:#071d36; color:#fff; height: 41px; padding: 0 20px;">Save Part</button>
+                </form>
+            </div>
+
+            <!-- Parts List Table -->
+            <div class="form-card">
+                <h3><i class="fa-solid fa-boxes-stacked"></i> Current Spare Parts Stock</h3>
+                <table class="dash-table" style="margin-top: 15px;">
+                    <thead>
+                        <tr>
+                            <th>Part ID</th>
+                            <th>Part Name</th>
+                            <th>Stock Quantity</th>
+                            <th>Unit Price (LKR)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if parts %}
+                            {% for p in parts %}
+                            <tr>
+                                <td>#PART-{{ p.part_id }}</td>
+                                <td><strong>{{ p.part_name }}</strong></td>
+                                <td><span class="badge {% if p.stock_qty > 5 %}badge-completed{% else %}badge-pending{% endif %}">{{ p.stock_qty }} Units</span></td>
+                                <td>Rs. {{ "{:,.2f}".format(p.unit_price) }}</td>
+                                <td>
+                                    <form action="{{ url_for('admin.sys_delete_part', part_id=p.part_id) }}" method="POST" style="display:inline;" onsubmit="return confirm('මෙම අමතර කොටස ඉවත් කිරීමට අවශ්‍ය බව තහවුරුද?');">
+                                        <button type="submit" style="background:#dc2626; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr><td colspan="5" style="text-align:center; padding:20px; color:#64748b;">කිසිදු අමතර කොටසක් ඇතුළත් කර නැත.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

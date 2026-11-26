@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Prime One Auto Service{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-card">
+        
+        <!-- වම් පස කොටස (Navy Blue Banner) -->
+        <div class="login-left">
+            <div class="image-grid">
+                <div class="img-box main-img">
+                    <img src="{{ url_for('static', filename='images/mechanic_main.jpg') }}" alt="Mechanic Repair" onerror="this.src='https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=800&q=80'">
+                </div>
+                <div class="img-box sub-img">
+                    <img src="{{ url_for('static', filename='images/wheel_service.jpg') }}" alt="Wheel Service" onerror="this.src='https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=400&q=80'">
+                </div>
+                <div class="img-box sub-img">
+                    <img src="{{ url_for('static', filename='images/under_car.jpg') }}" alt="Car Maintenance" onerror="this.src='https://images.unsplash.com/photo-1552975084-6e027cd345c2?auto=format&fit=crop&w=400&q=80'">
+                </div>
+            </div>
+
+            <div class="left-content">
+                <h2>Join Us, <span class="highlight">Get Started</span></h2>
+                <div class="yellow-underline"></div>
+                <p>Create your account today to book appointments, track vehicle service progress, and manage maintenance history easily in Homagama.</p>
+                
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-wrench"></i>
+                        <span>Expert Technicians</span>
+                    </div>
+                    <div class="vertical-divider"></div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Quality Service</span>
+                    </div>
+                    <div class="vertical-divider"></div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-car"></i>
+                        <span>All Vehicle Brands</span>
+                    </div>
+                    <div class="vertical-divider"></div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Customer Satisfaction</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="yellow-corner"></div>
+        </div>
+
+        <!-- දකුණු පස කොටස (Register Form) -->
+        <div class="login-right">
+            <div class="logo-container">
+                <div class="logo-svg">
+                    <svg viewBox="0 0 160 85" width="130" height="70">
+                        <path d="M 80,10 C 83.5,10 84.5,13 87,14 C 88.5,13 91.5,11 94.5,13 C 97.5,15 96.5,18 97.5,20 C 100,21 103,19.5 105.5,22 C 108,24.5 106.5,27.5 107.5,30 C 110,31 112,34 112,37.5 C 112,41 110,44 107.5,45 C 106.5,47.5 108,50.5 105.5,53 C 103,55.5 100,54 97.5,55 C 96.5,57 97.5,60 94.5,62 C 91.5,64 88.5,62 87,61 C 84.5,62 83.5,65 80,65 C 76.5,65 75.5,62 73,61 C 71.5,62 68.5,64 65.5,62 C 62.5,60 63.5,57 62.5,55 C 60,54 57,55.5 54.5,53 C 52,50.5 53.5,47.5 52.5,45 C 50,44 48,41 48,37.5 C 48,34 50,31 52.5,30 C 53.5,27.5 52,24.5 54.5,22 C 57,19.5 60,21 62.5,20 C 63.5,18 62.5,15 65.5,13 C 68.5,11 71.5,13 73,14 C 75.5,13 76.5,10 80,10 Z" fill="#F5B014"/>
+                        <circle cx="80" cy="37.5" r="22" fill="#FFFFFF"/>
+                        <path d="M 45,52 C 45,52 48,42 55,39 C 62,36 78,24 95,28 C 108,31 123,38 126,48 C 128,51 125,54 118,54 C 112,54 110,54 103,54 C 98,42 85,42 80,54 C 75,54 62,54 59,54 C 54,42 41,42 36,54 L 32,54 Z" fill="#0B3C7C"/>
+                        <circle cx="47.5" cy="54" r="9" fill="#0B2545"/>
+                        <circle cx="47.5" cy="54" r="4" fill="#FFFFFF"/>
+                        <circle cx="91.5" cy="54" r="9" fill="#0B2545"/>
+                        <circle cx="91.5" cy="54" r="4" fill="#FFFFFF"/>
+                    </svg>
+                </div>
+                <h1 class="brand-title">Prime One</h1>
+                <div class="brand-subtitle-wrapper">
+                    <span class="line"></span>
+                    <span class="brand-subtitle">AUTO SERVICE</span>
+                    <span class="line"></span>
+                </div>
+                <p class="location-tag"><i class="fa-solid fa-location-dot"></i> Homagama</p>
+            </div>
+
+            <div class="welcome-text">
+                <h3>Create an Account</h3>
+                <p>Register to get started with Prime One</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('auth.register') }}" method="POST" class="form-container">
+                <div class="input-group">
+                    <i class="fa-solid fa-user input-icon"></i>
+                    <input type="text" name="full_name" placeholder="Full Name" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope input-icon"></i>
+                    <input type="email" name="email" placeholder="Email Address" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-phone input-icon"></i>
+                    <input type="text" name="phone" placeholder="Phone Number" required>
+                </div>
+
+                <div class="input-group">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <i class="fa-solid fa-eye eye-icon" onclick="togglePassword()"></i>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Register Now &nbsp;<i class="fa-solid fa-user-plus"></i>
+                </button>
+            </form>
+
+            <div class="signup-text">
+                Already have an account? <a href="{{ url_for('auth.login') }}">Login Here</a>
+            </div>
+
+            <div class="login-footer">
+                <a href="#">Privacy Policy</a>
+                <span>© 2026 Prime One Auto Service</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.querySelector('.eye-icon');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+</script>
+{% endblock %}
